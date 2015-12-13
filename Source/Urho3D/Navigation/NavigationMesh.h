@@ -65,7 +65,7 @@ struct NavigationGeometryInfo
     BoundingBox boundingBox_;
 };
 
-struct URHO3D_API NavigationPathData
+struct URHO3D_API NONSCRIPTABLE NavigationPathData
 {
     PODVector<Vector3> pathPoints_;
     // Flags on the path.
