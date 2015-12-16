@@ -38,8 +38,8 @@ Urho3D development, contributions and bugfixes by:
 - Alex Parlett
 - Jordan Patterson
 - Vladimir Pobedinsky
+- Pranjal Raihan
 - Nick Royer
-- Jonathan Sandusky
 - Miika Santala
 - Hualin Song
 - James Thomas

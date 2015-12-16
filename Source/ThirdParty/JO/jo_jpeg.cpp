@@ -6,7 +6,7 @@
  * 	Supports 1, 3 or 4 component input. (luminance, RGB or RGBX)
  *
  * Latest revisions:
- *	1.52 (2012-22-11) Added support for specifying Luminance, RGB, or RGBA via comp(onents) argument (1, 3 and 4 respectively). 
+ *	1.52 (2012-22-11) Added support for specifying Luminance, RGB, or RGBA via comp(onents) argument (1, 3 and 4 respectively).
  *	1.51 (2012-19-11) Fixed some warnings
  *	1.50 (2012-18-11) MT safe. Simplified. Optimized. Reduced memory requirements. Zero allocations. No namespace polution. Approx 340 lines code.
  *	1.10 (2012-16-11) compile fixes, added docs,
@@ -14,9 +14,9 @@
  * 	1.00 (2012-02-02) initial release
  *
  * Basic usage:
- *	char *foo = new char[128*128*4]; // 4 component. RGBX format, where X is unused 
+ *	char *foo = new char[128*128*4]; // 4 component. RGBX format, where X is unused
  *	jo_write_jpg("foo.jpg", foo, 128, 128, 4, 90); // comp can be 1, 3, or 4. Lum, RGB, or RGBX respectively.
- * 	
+ *
  * */
 
 #ifndef JO_JPEG_HEADER_FILE_ONLY
@@ -86,7 +86,7 @@ static void jo_DCT(float &d0, float &d1, float &d2, float &d3, float &d4, float 
 	d3 = z13 - z2;
 	d1 = z11 + z4;
 	d7 = z11 - z4;
-} 
+}
 
 static void jo_calcBits(int val, unsigned short bits[2]) {
 	int tmp1 = val < 0 ? -val : val;
@@ -118,7 +118,7 @@ static int jo_processDU(FILE *fp, int &bitBuf, int &bitCnt, float *CDU, float *f
 	}
 
 	// Encode DC
-	int diff = DU[0] - DC; 
+	int diff = DU[0] - DC;
 	if (diff == 0) {
 		jo_writeBits(fp, bitBuf, bitCnt, HTDC[0]);
 	} else {
@@ -187,7 +187,7 @@ bool jo_write_jpg(const char *filename, const void *data, int width, int height,
 	// Huffman tables
 	static const unsigned short YDC_HT[256][2] = { {0,2},{2,3},{3,3},{4,3},{5,3},{6,3},{14,4},{30,5},{62,6},{126,7},{254,8},{510,9}};
 	static const unsigned short UVDC_HT[256][2] = { {0,2},{1,2},{2,2},{6,3},{14,4},{30,5},{62,6},{126,7},{254,8},{510,9},{1022,10},{2046,11}};
-	static const unsigned short YAC_HT[256][2] = { 
+	static const unsigned short YAC_HT[256][2] = {
 		{10,4},{0,2},{1,2},{4,3},{11,4},{26,5},{120,7},{248,8},{1014,10},{65410,16},{65411,16},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},
 		{12,4},{27,5},{121,7},{502,9},{2038,11},{65412,16},{65413,16},{65414,16},{65415,16},{65416,16},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},
 		{28,5},{249,8},{1015,10},{4084,12},{65417,16},{65418,16},{65419,16},{65420,16},{65421,16},{65422,16},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},
@@ -205,7 +205,7 @@ bool jo_write_jpg(const char *filename, const void *data, int width, int height,
 		{65515,16},{65516,16},{65517,16},{65518,16},{65519,16},{65520,16},{65521,16},{65522,16},{65523,16},{65524,16},{0,0},{0,0},{0,0},{0,0},{0,0},
 		{2041,11},{65525,16},{65526,16},{65527,16},{65528,16},{65529,16},{65530,16},{65531,16},{65532,16},{65533,16},{65534,16},{0,0},{0,0},{0,0},{0,0},{0,0}
 	};
-	static const unsigned short UVAC_HT[256][2] = { 
+	static const unsigned short UVAC_HT[256][2] = {
 		{0,2},{1,2},{4,3},{10,4},{24,5},{25,5},{56,6},{120,7},{500,9},{1014,10},{4084,12},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},
 		{11,4},{57,6},{246,8},{501,9},{2038,11},{4085,12},{65416,16},{65417,16},{65418,16},{65419,16},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},
 		{26,5},{247,8},{1015,10},{4086,12},{32706,15},{65420,16},{65421,16},{65422,16},{65423,16},{65424,16},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},
@@ -262,6 +262,7 @@ bool jo_write_jpg(const char *filename, const void *data, int width, int height,
 	fwrite(YTable, sizeof(YTable), 1, fp);
 	putc(1, fp);
 	fwrite(UVTable, sizeof(UVTable), 1, fp);
+    // Urho3D: modified to avoid narrowing conversion
 	const unsigned char head1[] = { 0xFF,0xC0,0,0x11,8,static_cast<unsigned char>(height>>8),static_cast<unsigned char>(height&0xFF),static_cast<unsigned char>(width>>8),static_cast<unsigned char>(width&0xFF),3,1,0x11,0,2,0x11,1,3,0x11,1,0xFF,0xC4,0x01,0xA2,0 };
 	fwrite(head1, sizeof(head1), 1, fp);
 	fwrite(std_dc_luminance_nrcodes+1, sizeof(std_dc_luminance_nrcodes)-1, 1, fp);
@@ -308,7 +309,7 @@ bool jo_write_jpg(const char *filename, const void *data, int width, int height,
 			DCV = jo_processDU(fp, bitBuf, bitCnt, VDU, fdtbl_UV, DCV, UVDC_HT, UVAC_HT);
 		}
 	}
-	
+
 	// Do the bit alignment of the EOI marker
 	static const unsigned short fillBits[] = {0x7F, 7};
 	jo_writeBits(fp, bitBuf, bitCnt, fillBits);
@@ -322,4 +323,3 @@ bool jo_write_jpg(const char *filename, const void *data, int width, int height,
 }
 
 #endif
-
